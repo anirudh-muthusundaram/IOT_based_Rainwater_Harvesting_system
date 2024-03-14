@@ -9,6 +9,10 @@ from someADClibrary import read_adc
 import logging
 import requests  
 
+# OWASP security enhancements
+SERVER_ENDPOINT = "https://yourserver.com/api/data"
+API_KEY = "your_api_key_here
+
 # Setup for logging: configuring to record events, errors, and information with timestamps in a log file.
 logging.basicConfig(filename='rainwater_harvesting.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
@@ -94,14 +98,16 @@ def control_dispenser(state):
 def send_data_to_server(data):
     # Placeholder for sending data to a server or database
     # Replace with actual API endpoint and authentication
-    try:
-        response = requests.post("http://yourserver.com/api/data", json=data)
+   try:
+        headers = {'Authorization': 'Bearer ' + API_KEY}
+        response = requests.post(SERVER_ENDPOINT, json=data, headers=headers)
         logging.info(f"Data sent to server: {data}, Response: {response.status_code}")
     except Exception as e:
         logging.error("Error sending data to server: " + str(e))
 
 # Main loop of the system, continuously checks for rain and measures pH levels, directing water flow based on pH.
 def system_loop():
+
     while True:
         if check_rain():
             ph_value = get_ph()
@@ -115,10 +121,9 @@ def system_loop():
             # Example for sending data to a server/database
             data = {"ph_value": ph_value, "rain_detected": True}
             send_data_to_server(data)
-            
-            # Implement further logic based on project requirements
-            
-            time.sleep(60)  # Check every minute, adjust as necessary
+            # Check every minute, adjust as necessary
+            time.sleep(60)
+
 
 # Driver Function to start and operate the system.
 if __name__ == "__main__":
